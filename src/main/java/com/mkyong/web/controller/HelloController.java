@@ -13,10 +13,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import javax.xml.transform.Result;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -24,7 +24,7 @@ public class HelloController {
 
 	@Autowired
 	private DataSource dataSource;
-
+	ArrayList<User> result = new ArrayList();
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
 
@@ -64,7 +64,30 @@ public class HelloController {
 			preparedStatement.setString(3,user.getEmail());
 
 			preparedStatement.execute();
+			preparedStatement.close();
+			String query = "SELECT * FROM example";
 
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+
+			while (rs.next())
+			{
+				String fname = rs.getString("firstname");
+				String lname = rs.getString("lastname");
+				String email = rs.getString("email");
+
+				User obj = new User();
+				obj.setFname(fname);
+				obj.setLname(lname);
+				obj.setEmail(email);
+
+				result.add(obj);
+
+
+
+			}
+			model.addAttribute("message", result);
+			st.close();
 			conn.close();
 
 
@@ -75,7 +98,7 @@ public class HelloController {
 		}
 
 
-		model.addAttribute("message", user);
+		//model.addAttribute("message", user);
 		return "result";
 	}
 

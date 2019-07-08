@@ -19,9 +19,12 @@
 
 <div class="container">
 
-	    First Name:${message.fname}</br>
-        Last Name:${message.lname}</br>
-        Email:${message.email}</br>
+
+        <c:forEach items="${message}" var="result">
+            First Name:${result.fname}</br>
+            Last Name:${result.lname}</br>
+            Email:${result.email}</br>
+        </c:forEach>
 </div>
 
 
